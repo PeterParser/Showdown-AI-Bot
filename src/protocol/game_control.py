@@ -20,6 +20,12 @@ import logging
 
 logger = logging.getLogger("GameLoop")
 
+#mode = "randombattle"
+mode = "gen2ou"
+
+
+utm = "Blissey|||none|bodyslam,doubleedge,fireblast,flamethrower|Serious|252,252,252,252,252,252|F||||"
+
 
 class GameLoop:
     """Main control class"""
@@ -35,7 +41,7 @@ class GameLoop:
         self.battle_field = BattleFieldSingle(None, None, {}, {})
         with open("standard_answers", "r") as file:
             self.standard_answers = file.readlines()
-        self.db = DatabaseDataSource()
+        #self.db = DatabaseDataSource()
         self.damage_tracker = DamageTracker()
         self.last_move = ""
         self.counter = 0
@@ -134,11 +140,20 @@ class GameLoop:
         :param string_tab:
         :return:
         """
-        if self.user_name in string_tab[2]:
-            if self.mode == "challenging":
-                await sender.challenge(self.ws, self.opponent_name, "gen"+str(self.gen)+"randombattle")
-            elif self.mode == "searching":
-                await sender.searching(self.ws, "gen"+str(self.gen)+"randombattle")
+        if mode == "randombattle":
+            if self.user_name in string_tab[2]:
+                if self.mode == "challenging":
+                    await sender.challenge(self.ws, self.opponent_name, "gen"+str(self.gen)+mode)
+                elif self.mode == "searching":
+                    await sender.searching(self.ws, "gen"+str(self.gen)+mode)
+        elif mode == "gen2ou":
+            if self.user_name in string_tab[2]:
+                if self.mode == "challenging":
+                    await sender.sendutm(self.ws, utm)
+                    await sender.challenge(self.ws, self.opponent_name, mode)
+                elif self.mode == "searching":
+                    await sender.sendutm(utm)
+                    await sender.searching(self.ws, mode)
 
     async def _handle_update_search(self, string_tab):
         """Method that handles the creation of battle room and saves the room id and prints the link to watch the battle

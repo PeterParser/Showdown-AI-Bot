@@ -29,8 +29,8 @@ async def challenge(websocket, player, form):
     :param player: Player name.
     :param form: String, battle format.
     """
+    print("/challenge " + player + ", " + form)
     await sender(websocket, "", "/challenge " + player + ", " + form)
-
 
 async def sendmessage(websocket, battletag, message):
     """
@@ -58,7 +58,8 @@ async def sendmove(websocket, battletag, move, turn, can_mega, is_Z):
 
     else:
         await sender(websocket, battletag, "/choose move " + str(move), str(turn))
-    #websocket.send("/choose move {} {}".format(str(move), str(turn)))
+    # websocket.send("/choose move {} {}".format(str(move), str(turn)))
+
 
 async def sendswitch(websocket, battletag, pokemon, turn):
     """
@@ -70,6 +71,9 @@ async def sendswitch(websocket, battletag, pokemon, turn):
     """
     await sender(websocket, battletag, "/choose switch " + str(pokemon), str(turn))
 
+
+async def sendutm(websocket, utm):
+    await sender(websocket, "", "/utm "+utm)
 
 async def leaving(websocket, battletag):
     """
